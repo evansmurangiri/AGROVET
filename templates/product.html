@@ -1,0 +1,184 @@
+{% extends "base.html" %}
+{% load static %}
+
+{% block content %}
+<!-- Main content -->
+<main>
+  <div class="container mt-5">
+
+    <!-- Section heading - Different title based on view -->
+    {% if is_detail_view %}
+      <h2 class="my-5 h2 text-center">Product Details</h2>
+    {% else %}
+      <h2 class="my-5 h2 text-center">Our Products</h2>
+    {% endif %}
+
+    <!-- Grid row -->
+    <div class="row">
+
+      {% for item in object_list %}
+      <!-- Grid column -->
+      <div class="col-lg-3 col-md-6 mb-4">
+
+        <!-- Card -->
+        <div class="card h-100 product-card">
+
+          <!-- Product image -->
+          <div class="view overlay">
+            <a href="{{ item.get_absolute_url }}">
+              {% if item.image %}
+              <img class="card-img-top" src="{{ item.image.url }}" alt="{{ item.title }}">
+              {% else %}
+              <img class="card-img-top" src="https://via.placeholder.com/300x200?text=No+Image"
+                alt="No image available">
+              {% endif %}
+            </a>
+            <a href="{{ item.get_absolute_url }}">
+              <div class="mask rgba-white-slight"></div>
+            </a>
+          </div>
+          <!-- Product image -->
+
+          <!-- Card content -->
+          <div class="card-body text-center d-flex flex-column">
+
+            <!-- Category -->
+            <div class="mb-2">
+              <span class="badge badge-primary">{{ item.get_category_display }}</span>
+            </div>
+
+            <!-- Title -->
+            <h5 class="card-title">
+              <strong>
+                <a href="{{ item.get_absolute_url }}" class="dark-grey-text">{{ item.title }}</a>
+              </strong>
+            </h5>
+
+            <!-- Price -->
+            <h6 class="font-weight-bold blue-text mt-auto">
+              {% if item.discount_price %}
+              <del class="text-muted small">KSH{{ item.price }}</del>
+              <span class="text-danger">KSH{{ item.discount_price }}</span>
+              {% else %}
+              <span>KSH{{ item.price }}</span>
+              {% endif %}
+            </h6>
+
+            <!-- Description (truncated) -->
+            <p class="card-text text-muted small">
+              {{ item.description|truncatewords:15 }}
+            </p>
+
+          </div>
+          <!-- Card content -->
+
+          <!-- Card footer -->
+          <div class="card-footer text-center">
+            <a href="{{ item.get_absolute_url }}" class="btn btn-primary btn-sm">View Details</a>
+            <a href="{{ item.get_add_to_cart_url }}" class="btn btn-success btn-sm">Add to Cart</a>
+          </div>
+          <!-- Card footer -->
+
+        </div>
+        <!-- Card -->
+
+      </div>
+      <!-- Grid column -->
+      {% endfor %}
+
+    </div>
+    <!-- Grid row -->
+
+    <!-- Related Products Section (only show on detail page) -->
+    {% if is_detail_view and related_products %}
+    <div class="row mt-5">
+      <div class="col-12">
+        <h3 class="mb-4 text-center">You Might Also Like</h3>
+      </div>
+      {% for related_item in related_products %}
+      <div class="col-lg-3 col-md-6 mb-4">
+        <div class="card h-100 product-card">
+          <div class="view overlay">
+            <a href="{{ related_item.get_absolute_url }}">
+              {% if related_item.image %}
+              <img class="card-img-top" src="{{ related_item.image.url }}" alt="{{ related_item.title }}">
+              {% else %}
+              <img class="card-img-top" src="https://via.placeholder.com/300x200?text=No+Image" alt="No image available">
+              {% endif %}
+            </a>
+          </div>
+          <div class="card-body text-center d-flex flex-column">
+            <div class="mb-2">
+              <span class="badge badge-primary">{{ related_item.get_category_display }}</span>
+            </div>
+            <h5 class="card-title">
+              <strong>
+                <a href="{{ related_item.get_absolute_url }}" class="dark-grey-text">{{ related_item.title }}</a>
+              </strong>
+            </h5>
+            <h6 class="font-weight-bold blue-text mt-auto">
+              {% if related_item.discount_price %}
+              <del class="text-muted small">KSH{{ related_item.price }}</del>
+              <span class="text-danger">KSH{{ related_item.discount_price }}</span>
+              {% else %}
+              <span>KSH{{ related_item.price }}</span>
+              {% endif %}
+            </h6>
+            <div class="mt-auto">
+              <a href="{{ related_item.get_absolute_url }}" class="btn btn-primary btn-sm">View Details</a>
+            </div>
+          </div>
+        </div>
+      </div>
+      {% endfor %}
+    </div>
+    {% endif %}
+
+  </div>
+</main>
+<!-- Main content -->
+{% endblock content %}
+
+{% block extra_css %}
+<style>
+  .product-card {
+    transition: transform 0.3s, box-shadow 0.3s;
+    border: none;
+    border-radius: 8px;
+    overflow: hidden;
+    box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
+  }
+
+  .product-card:hover {
+    transform: translateY(-5px);
+    box-shadow: 0 10px 20px rgba(0, 0, 0, 0.15);
+  }
+
+  .card-img-top {
+    height: 200px;
+    object-fit: cover;
+    width: 100%;
+  }
+
+  .card-body {
+    display: flex;
+    flex-direction: column;
+  }
+
+  .card-title {
+    min-height: 48px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+  }
+
+  .card-text {
+    flex-grow: 1;
+  }
+
+  .card-footer {
+    background: white;
+    border-top: 1px solid rgba(0, 0, 0, 0.1);
+  }
+</style>
+{% endblock extra_css %}
