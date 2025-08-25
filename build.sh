@@ -2,10 +2,11 @@
 # Exit on error
 set -o errexit
 
-# Modify this line to match your project's setup
+# Install dependencies including gunicorn
 pip install -r requirements.txt
+pip install gunicorn
 
-# Run migrations if needed (uncomment the next line)
+# Run migrations
 python manage.py migrate
 
 # Collect static files
